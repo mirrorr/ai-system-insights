@@ -1,11 +1,38 @@
-function FileUpload() {
-  return (
-    <section>
-      <h3>Upload System Data</h3>
-      <input type="file" accept=".log,.txt,.json,.yaml,.yml" />
-      <p>Upload logs, configs, or documents for analysis.</p>
-    </section>
-  );
+import { useState } from "react";
+import { uploadDocument } from "../../services/api";
+import { AppState } from "../../types/appState";
+
+interface Props {
+  setAppState: (state: AppState) => void;
 }
 
-export default FileUpload;
+export default function FileUpload({ setAppState }: Props) {
+  const [fileContent, setFileContent] = useState<string>("");
+
+  const handleFile = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    setAppState("uploading");
+
+    const text = await file.text();
+    setFileContent(text);
+
+    setAppState("processing");
+
+    const result = await uploadDocument(text);
+
+    console.log("Ingestion result:", result);
+
+    setAppState("ready");
+  };
+
+  return (
+    <div className="p-4 border rounded">
+      <input type="file" onChange={handleFile} />
+      <p className="text-sm mt-2">
+        Upload a document to start AI analysis
+      </p>
+    </div>
+  );
+}

@@ -1,16 +1,24 @@
-import MainLayout from './components/layout/MainLayout';
-import ChatWindow from './components/chat/ChatWindow';
-import FileUpload from './components/upload/FileUpload';
+import { useState } from "react";
+import FileUpload from "./components/upload/FileUpload";
+import ChatWindow from "./components/chat/ChatWindow";
+import { AppState } from "./types/appState";
 
-function App() {
+export default function App() {
+  const [appState, setAppState] = useState<AppState>("empty");
+
   return (
-    <MainLayout>
-      <div className="app-shell">
-        <FileUpload />
-        <ChatWindow />
+    <div className="max-w-3xl mx-auto p-6 space-y-4">
+      <h1 className="text-xl font-bold">
+        AI System Insights Assistant
+      </h1>
+
+      <FileUpload setAppState={setAppState} />
+
+      <div className="text-sm text-gray-500">
+        Status: {appState}
       </div>
-    </MainLayout>
+
+      <ChatWindow appState={appState} />
+    </div>
   );
 }
-
-export default App;

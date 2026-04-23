@@ -1,0 +1,14 @@
+The system architecture consists of a microservices-based backend with a central API gateway.
+
+The Order Service handles all order-related operations, including creation, validation, and processing. It communicates with the Inventory Service and Payment Service.
+
+During the latest deployment, a missing database index caused significant performance degradation in the Order Service. This resulted in slow queries and increased latency across the system.
+
+The caching layer uses Redis, but cache invalidation strategies were not properly configured. This led to a high cache miss rate and increased database load.
+
+To mitigate these issues, the team initiated a rollback and later implemented proper indexing and caching strategies.
+
+Future improvements include:
+- better observability
+- automated performance testing
+- improved deployment validation

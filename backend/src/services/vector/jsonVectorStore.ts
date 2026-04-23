@@ -1,20 +1,23 @@
-import fs from 'fs/promises';
-import path from 'path';
+import fs from "fs";
 
-const storagePath = path.resolve(process.cwd(), 'backend', 'src', 'data', 'vectors.json');
+export type VectorDoc = {
+  id: string;
+  text: string;
+  embedding: number[];
+};
 
-export async function getRelevantVectors(query: string) {
-  try {
-    const raw = await fs.readFile(storagePath, 'utf-8');
-    const vectors = JSON.parse(raw);
-    return vectors;
-  } catch {
-    return [];
-  }
+const FILE = "./src/data/vectors.json";
+
+export function loadStore(): VectorDoc[] {
+  if (!fs.existsSync(FILE)) return [];
+  return JSON.parse(fs.readFileSync(FILE, "utf-8"));
 }
 
-export async function saveVector(vector: unknown) {
-  const existing = await getRelevantVectors('');
-  existing.push(vector);
-  await fs.writeFile(storagePath, JSON.stringify(existing, null, 2), 'utf-8');
+export function saveStore(data: VectorDoc[]) {
+  fs.writeFileSync(FILE, JSON.stringify(data, null, 2));
+}
+
+export function addDocuments(docs: VectorDoc[]) {
+  const store = loadStore();
+  saveStore([...store, ...docs]);
 }
