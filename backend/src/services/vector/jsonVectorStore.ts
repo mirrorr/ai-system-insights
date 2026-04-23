@@ -1,9 +1,13 @@
 import fs from "fs";
 
 export type VectorDoc = {
-  id: string;
+  id: string;              // hash
   text: string;
   embedding: number[];
+  metadata: {
+    source: string;        // filename
+    uploadedAt: string;    // ISO date string
+  };
 };
 
 const FILE = "./src/data/vectors.json";

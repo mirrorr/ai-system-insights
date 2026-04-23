@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/', async (req, res) => {
 console.log("Received ingest request with body:", req.body);
-  const { data } = req.body;
+  const { data, source } = req.body;
 
   if (!data) {
     console.warn("Ingest request missing 'data' field");
@@ -13,7 +13,7 @@ console.log("Received ingest request with body:", req.body);
   }
   console.log("Starting ingestion process for data length:", data.length);
 
-  await ingestDocument(data); // chunk + embed + store
+  await ingestDocument(data, source); // chunk + embed + store
 
   res.json({ status: 'ok', ingested: true });
 

@@ -1,32 +1,55 @@
 import { chunkText } from '../utils/chunker.ts';
+import { hashText } from '../utils/hash.ts';
 import { createEmbedding } from './embedding.service.ts';
-import { addDocuments } from './vector/jsonVectorStore.ts';
+import { loadStore, saveStore } from './vector/jsonVectorStore.ts';
 
-export async function ingestDocument(data: string) {
-  // 1. Clean input
-  const cleanText = data.trim();
+export async function ingestDocument(data: string, source: string) {
 
-  // 2. Split into chunks
-  const chunks = chunkText(cleanText);
+  // 1. Split into chunks
+  const chunks = chunkText(data.trim());
+  const uploadTime = new Date().toISOString();
+
+  // 2.  Build quick lookup set for existing IDs (FAST)
+  const store = loadStore();
+  const existingIds = new Set(store.map((doc: any) => doc.id));
 
   // 3. Create embeddings for each chunk
+  let added = 0;
+  let skipped = 0;
   const embeddedChunks = await Promise.all(
     chunks.map(async (chunk, index) => {
-      const embedding = await createEmbedding(chunk);
+      const id = hashText(chunk);
 
-      return {
-        id: `chunk-${Date.now()}-${index}`,
-        text: chunk,
-        embedding,
-      };
+      // 🚨 dedup check
+      if (existingIds.has(id)) {
+        skipped++;
+      } else {
+        added++;
+        existingIds.add(id);
+        const embedding = await createEmbedding(chunk);
+
+        store.push({
+          id,
+          text: chunk,
+          embedding,
+          metadata: {
+            source,
+            uploadedAt: uploadTime
+          },
+        });
+      }
+      
     })
   );
 
   // 4. Store in vector DB (JSON for now)
-  addDocuments(embeddedChunks);
+  saveStore(store);
+  console.log(`[INGEST] Added: ${added}, Skipped duplicates: ${skipped}`);
 
   return {
     status: "indexed",
     chunks: embeddedChunks.length,
+    added,
+    skipped
   };
 }

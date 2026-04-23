@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { uploadDocument } from "../../services/api";
 import { AppState } from "../../types/appState";
+import { s } from "vite/dist/node/types.d-aGj9QkWt";
 
 interface Props {
   setAppState: (state: AppState) => void;
@@ -20,7 +21,8 @@ export default function FileUpload({ setAppState }: Props) {
 
     setAppState("processing");
 
-    const result = await uploadDocument(text);
+    const source = file.name;
+    const result = await uploadDocument(text, source);
 
     console.log("Ingestion result:", result);
 

@@ -1,6 +1,8 @@
 import { useState } from "react";
 import { sendChatMessage } from "../../services/api";
 import { AppState } from "../../types/appState";
+import toast from "react-hot-toast";
+
 
 interface Message {
     role: "user" | "assistant";
@@ -27,14 +29,18 @@ export default function ChatWindow({ appState }: Props) {
         setMessages((prev) => [...prev, userMsg]);
         setInput("");
 
-        const res = await sendChatMessage(input, mode);
+        try {
+            const res = await sendChatMessage(input, mode);
+            const aiMsg: Message = {
+                role: "assistant",
+                content: res.answer,
+            };
+            setMessages((prev) => [...prev, aiMsg]);
 
-        const aiMsg: Message = {
-            role: "assistant",
-            content: res.answer,
-        };
-
-        setMessages((prev) => [...prev, aiMsg]);
+        } catch (error) {
+            toast.error(error.message || "Something went wrong");
+            console.error('Error occurred while sending chat message:', error);
+        }
     };
 
     return (

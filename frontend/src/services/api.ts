@@ -10,17 +10,18 @@ export async function sendChatMessage(message: string, mode: 'strict' | 'creativ
   });
 
   if (!response.ok) {
-    throw new Error('Failed to send chat message');
+    const err = await response.json();
+    throw new Error(err.message);
   }
 
   return response.json();
 }
 
-export async function uploadDocument(data: string): Promise<any> {
+export async function uploadDocument(data: string, source: string): Promise<any> {
   const response = await fetch(`${API_BASE}/ingest`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ data }),
+    body: JSON.stringify({ data, source }),
   });
 
   if (!response.ok) {

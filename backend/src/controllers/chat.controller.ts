@@ -10,9 +10,13 @@ router.post('/', async (req, res) => {
     return res.status(400).json({ error: 'Message text is required' });
   }
 
-  const answer = await ragService(message, mode);
-
-  res.json({ answer });
+  try {
+    const answer = await ragService(message, mode);
+    res.json({ answer });
+  } catch (error) {
+    console.error('Error occurred while processing the request:', error);
+    res.status(500).json({ error: 'An error occurred while processing the request' });
+  }
 });
 
 export default router;
