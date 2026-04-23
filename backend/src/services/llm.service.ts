@@ -4,7 +4,7 @@ const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
 
 // Use fast + cheap model
 const model = genAI.getGenerativeModel({
-  model: "gemini-2.5-flash", // or latest flash version
+  model: "gemini-flash-latest", // gemini-2.5-flash or gemini-flash-latest
 });
 
 export async function callLLM(prompt: string): Promise<string> {

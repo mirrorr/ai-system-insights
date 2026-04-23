@@ -43,3 +43,14 @@ Responses include machine-readable insights:
   "cause": "Database bottleneck",
   "confidence": 0.87
 }
+
+---
+
+## 🛠 Tools
+
+### 1. Local vectors vs ChromaDB
+To switch local vs chroma use vectorStore.factory.ts file (line const backend = process.env.VECTOR_STORE ?? 'chroma'; // default to json (chroma is optional and requires separate setup))
+
+### 2. ChromaDB
+Start with: chroma run --path ./chroma_data
+Debug with: http://localhost:4000/debug/chroma

@@ -1,0 +1,6 @@
+{
+  "watch": ["src", "services", "routes"],
+  "ext": "ts,json",
+  "ignore": ["*.test.ts", "vectors.json"],
+  "exec": "ts-node --esm src/server.ts"
+}

@@ -14,10 +14,11 @@ export async function ragService(query: string, mode: RagMode ) {
 
   const prompt = buildPrompt(query, context, mode);
 
-
+  console.log("[RAG] Prompt:", prompt);
   // 4. Call LLM
   const answer = await callLLM(prompt);
 
+  console.log("[RAG] Answer:", answer);
   return answer;
 }
 

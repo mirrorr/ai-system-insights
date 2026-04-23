@@ -65,7 +65,7 @@ export default function ChatWindow({ appState }: Props) {
                             : "Ask something..."
                     }
                 />
-                <div className="flex items-center gap-2 mb-2">
+                <div className="flex items-center gap-2">
                     <span className="text-sm">Strict</span>
 
                     <button
@@ -87,6 +87,7 @@ export default function ChatWindow({ appState }: Props) {
                 <button
                     onClick={sendMessage}
                     disabled={appState !== "ready"}
+                    className="bg-blue-500 text-white px-4 py-2 rounded disabled:bg-gray-400"
                 >
                     Send
                 </button>

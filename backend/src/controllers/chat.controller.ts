@@ -5,7 +5,7 @@ const router = Router();
 
 router.post('/', async (req, res) => {
   const { message, mode } = req.body;
-
+console.log("Received chat message:", message, "with mode:", mode);
   if (!message) {
     return res.status(400).json({ error: 'Message text is required' });
   }
